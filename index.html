@@ -78,28 +78,6 @@
             color: #4b6cb7;
             margin-top: 20px;
         }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .container {
-                padding: 20px;
-                max-width: 90%;
-            }
-            .question {
-                font-size: 20px;
-            }
-            .options label {
-                font-size: 18px;
-                padding: 12px;
-            }
-            .navigation-buttons {
-                flex-direction: column;
-            }
-            .navigation-buttons button {
-                width: 100%;
-                margin-bottom: 10px;
-            }
-        }
     </style>
 </head>
 <body>
@@ -117,12 +95,12 @@
 
     <script>
         const questions = [
-            { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], correct: "C" },
-            { question: "Who painted the Mona Lisa?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"], correct: "B" },
-            { question: "Which planet is known as the Blue Planet?", options: ["Mars", "Venus", "Earth", "Jupiter"], correct: "C" },
-            { question: "Which is the longest river in the world?", options: ["Amazon", "Nile", "Yangtze", "Mississippi"], correct: "B" },
-            { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: "C" }
-        ];
+    { question: "What is the capital of France?", options: ["Berlin", "Madrid", "Paris", "Rome"], correct: "C" },
+    { question: "Who painted the Mona Lisa?", options: ["Vincent van Gogh", "Leonardo da Vinci", "Pablo Picasso", "Claude Monet"], correct: "B" },
+    { question: "Which planet is known as the Blue Planet?", options: ["Mars", "Venus", "Earth", "Jupiter"], correct: "C" },
+    { question: "Which is the longest river in the world?", options: ["Amazon", "Nile", "Yangtze", "Mississippi"], correct: "B" },
+    { question: "How many continents are there?", options: ["5", "6", "7", "8"], correct: "C" }
+];
         
         let currentQuestionIndex = 0;
         let score = 0;
@@ -145,8 +123,42 @@
             document.getElementById("prevBtn").disabled = currentQuestionIndex === 0;
         }
         
+        function selectAnswer(label, answer) {
+            document.querySelectorAll(".options label").forEach(l => l.classList.remove("selected"));
+            label.classList.add("selected");
+            selectedAnswer = answer;
+        }
+        
+        function nextQuestion() {
+            if (!selectedAnswer) {
+                alert("Please select an answer before proceeding!");
+                return;
+            }
+            if (selectedAnswer === questions[currentQuestionIndex].correct) {
+                score++;
+            }
+            if (currentQuestionIndex < questions.length - 1) {
+                currentQuestionIndex++;
+                selectedAnswer = null;
+                loadQuestion();
+            } else {
+                displayResult();
+            }
+        }
+        
+        function prevQuestion() {
+            if (currentQuestionIndex > 0) {
+                currentQuestionIndex--;
+                selectedAnswer = null;
+                loadQuestion();
+            }
+        }
+        
         function displayResult() {
-            document.querySelector(".container").innerHTML = `<h2 class='result'>🎉 Quiz Completed! 🎉</h2><p class='result'>Your Score: ${score}/${questions.length}</p>`;
+            document.querySelector(".container").innerHTML = `
+                <h2 class='result'>🎉 Quiz Completed! 🎉</h2>
+                <p class='result'>Your Score: ${score}/${questions.length}</p>
+            `;
             confettiEffect();
         }
         
@@ -156,7 +168,7 @@
         
         loadQuestion();
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.5.1/dist/confetti.browser.min.js"></script>
 </body>
 </html>
-
